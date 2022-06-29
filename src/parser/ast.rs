@@ -165,6 +165,7 @@ pub enum Precedence {
     LessGreater,
     Sum,
     Product,
+    Prefix,
     Call,
     Index,
 }
