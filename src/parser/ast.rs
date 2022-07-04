@@ -86,7 +86,7 @@ pub fn csv_str<T: fmt::Display>(arr: &[T]) -> String {
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Literal {
-    NumberLiteral(f64),
+    NumberLiteral(i64),
     BoolLiteral(bool),
     StringLiteral(String),
 }

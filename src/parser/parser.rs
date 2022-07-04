@@ -439,7 +439,7 @@ mod parser_test_statements {
         parser.check_parser_errors();
 
         let expected = vec![
-            Stmt::LetStmt(Ident("x".to_string()), Expr::LitExpr(Literal::NumberLiteral(1f64))),
+            Stmt::LetStmt(Ident("x".to_string()), Expr::LitExpr(Literal::NumberLiteral(1i64))),
             Stmt::LetStmt(Ident("y".to_string()), Expr::LitExpr(Literal::BoolLiteral(true))),
             Stmt::LetStmt(Ident("z".to_string()), Expr::IdentExpr(Ident("y".to_string()))),
         ];
@@ -457,11 +457,11 @@ mod parser_test_statements {
         parser.check_parser_errors();
 
         let expected = vec![
-            Stmt::ReturnStmt(Expr::LitExpr(Literal::NumberLiteral(7f64))),
+            Stmt::ReturnStmt(Expr::LitExpr(Literal::NumberLiteral(7i64))),
             Stmt::ReturnStmt(Expr::InfixExpr(
                 Infix::Plus,
-                Box::new(Expr::LitExpr(Literal::NumberLiteral(3f64))),
-                Box::new(Expr::LitExpr(Literal::NumberLiteral(4f64)))
+                Box::new(Expr::LitExpr(Literal::NumberLiteral(3i64))),
+                Box::new(Expr::LitExpr(Literal::NumberLiteral(4i64)))
             )),
         ];
 

@@ -148,7 +148,7 @@ impl Lexer {
         self.source[start..self.current].iter().collect()
     }
 
-    fn read_number(&mut self) -> f64 {
+    fn read_number(&mut self) -> i64 {
         let start = self.current;
         while self.ch.is_numeric() {
             if self.peek() == '.' {
@@ -225,12 +225,12 @@ mod lexer_test {
             Token::Let,
             Token::Ident("one".to_string()),
             Token::Assign,
-            Token::Number(1f64),
+            Token::Number(1i64),
             Token::Semicolon,
             Token::Let,
             Token::Ident("two".to_string()),
             Token::Assign,
-            Token::Number(2f64),
+            Token::Number(2i64),
             Token::Semicolon,
             Token::Fn,
             Token::Ident("sub".to_string()),
