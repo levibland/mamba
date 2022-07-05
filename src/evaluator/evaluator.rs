@@ -379,7 +379,6 @@ impl Evaluator {
 #[cfg(test)]
 mod evaluator_tests {
     use super::*;
-    use crate::lexer::token::*;
     use crate::lexer::*;
     use crate::parser::*;
 
