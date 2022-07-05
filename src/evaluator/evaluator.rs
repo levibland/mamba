@@ -375,3 +375,62 @@ impl Evaluator {
         self.object_to_hash(object)
     }
 }
+
+#[cfg(test)]
+mod evaluator_tests {
+    use super::*;
+    use crate::lexer::token::*;
+    use crate::lexer::*;
+    use crate::parser::*;
+
+    fn compare(input: &str, object: Object) {
+        let lexer = Lexer::new(input.to_string());
+        let mut parser = Parser::new(lexer);
+        let program = parser.parse_program();
+        parser.check_parser_errors();
+
+        let mut evaluator = Evaluator::new();
+        let eval = evaluator.eval_program(program);
+        assert_eq!(eval, object);
+    }
+
+    #[test]
+    fn test_literals() {
+        // numbers
+        compare("5", Object::Number(5));
+        compare("12", Object::Number(12));
+
+        // booleans
+        compare("true", Object::Boolean(true));
+        compare("false", Object::Boolean(false));
+    }
+
+    #[test]
+    fn test_prefix_ops() {
+        // bang op
+        compare("!false", Object::Boolean(true));
+        compare("!true", Object::Boolean(false));
+        compare("!!false", Object::Boolean(false));
+        compare("!!true", Object::Boolean(true));
+        compare(
+            "!10",
+            Object::Error("10 is not a bool".to_string()),
+        );
+
+        // + prefix
+        compare("+1", Object::Number(1));
+        compare("+100", Object::Number(100));
+        compare(
+            "+true",
+            Object::Error("true is not a number".to_string()),
+        );
+
+        // - prefix
+        compare("-1", Object::Number(-1));
+        compare("-5", Object::Number(-5));
+        compare(
+            "-false",
+            Object::Error("false is not a number".to_string()),
+        );
+    }
+}
