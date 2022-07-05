@@ -1,0 +1,7 @@
+fn square(x) {
+    return x * x;
+}
+
+let four = 4;
+
+println(square(four));
