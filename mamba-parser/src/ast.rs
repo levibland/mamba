@@ -177,8 +177,8 @@ impl From<&Token> for Precedence {
             Token::Lt | Token::Gt | Token::GtEq | Token::LtEq => Precedence::LessGreater,
             Token::Plus | Token::Minus => Precedence::Sum,
             Token::Asterisk | Token::Slash => Precedence::Product,
-            Token::LParen => Precedence::Call,
-            Token::LBracket => Precedence::Index,
+            Token::Open(Delimiter::Paren) => Precedence::Call,
+            Token::Open(Delimiter::Brack) => Precedence::Index,
             _ => Precedence::Lowest,
         }
     }

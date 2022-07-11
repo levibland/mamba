@@ -1,5 +1,5 @@
 use mamba_lexer::Lexer;
-use mamba_lexer::token::Token;
+use mamba_lexer::token::*;
 use crate::ast::{
     BlockStmt, 
     Expr, 
@@ -139,10 +139,10 @@ impl Parser {
             Token::Number(n) => Ok(Expr::LitExpr(Literal::NumberLiteral(n))),
             Token::String(s) => Ok(Expr::LitExpr(Literal::StringLiteral(s))),
             Token::Boolean(b) => Ok(Expr::LitExpr(Literal::BoolLiteral(b))),
-            Token::LBracket => self.parse_array_literal(),
+            Token::Open(Delimiter::Brack) => self.parse_array_literal(),
             Token::Bang | Token::Minus | Token::Plus => self.parse_prefix_expression(),
-            Token::LParen => self.parse_grouped_expression(),
-            Token::LBrace => self.parse_map_literal(),
+            Token::Open(Delimiter::Paren) => self.parse_grouped_expression(),
+            Token::Open(Delimiter::Brace) => self.parse_map_literal(),
             Token::If => self.parse_if_expression(),
             _ => Err(ParserError::ExpectedPrefixToken(self.cur_tok.clone())),
         }
@@ -193,22 +193,22 @@ impl Parser {
     }
 
     fn parse_call_expression(&mut self, left: Box<Expr>) -> ParserResult<Expr> {
-        let args = self.parse_expression_list(Token::RParen)?;
+        let args = self.parse_expression_list(Token::Close(Delimiter::Paren))?;
         Ok(Expr::CallExpr { function: left, args })
     }
 
 
     fn parse_array_literal(&mut self) -> ParserResult<Expr> {
-        let items = self.parse_expression_list(Token::RBracket)?;
+        let items = self.parse_expression_list(Token::Close(Delimiter::Brack))?;
         Ok(Expr::ArrayExpr(items))
     }
 
     fn parse_index_expression(&mut self, left: Box<Expr>) -> ParserResult<Expr> {
-        // cur_tok: LBracket
+        // cur_tok: Open::(Delimiter::Brack)
         self.next_token();
         let index = Box::new(self.parse_expression(Precedence::Lowest)?);
 
-        self.expect_peek(Token::RBracket, ParserError::ExpectedRBracket)?;
+        self.expect_peek(Token::Close(Delimiter::Brack), ParserError::ExpectedRBracket)?;
 
         Ok(Expr::IndexExpr { array: left, index })
     }
@@ -239,16 +239,16 @@ impl Parser {
         self.next_token();
         let expr = self.parse_expression(Precedence::Lowest)?;
 
-        self.expect_peek(Token::RParen, ParserError::ExpectedRParen)?;
+        self.expect_peek(Token::Close(Delimiter::Paren), ParserError::ExpectedRParen)?;
 
         Ok(expr)
     }
 
     fn parse_map_literal(&mut self) -> ParserResult<Expr> {
-        // cur_tok: LBrace, peek_tok: beginning of expr or RBrace
+        // cur_tok: Open(Delimiter::Brace), peek_tok: beginning of expr or Close(Delimiter::Brace)
         let mut pairs = vec![];
 
-        while self.peek_tok != Token::RBrace {
+        while self.peek_tok != Token::Close(Delimiter::Brace) {
             self.next_token();
             let key = self.parse_expression(Precedence::Lowest)?;
 
@@ -264,33 +264,33 @@ impl Parser {
             let value = self.parse_expression(Precedence::Lowest)?;
             pairs.push((literal, value));
 
-            if self.peek_tok == Token::RBrace {
+            if self.peek_tok == Token::Close(Delimiter::Brace) {
                 break;
             }
 
             self.expect_peek(Token::Comma, ParserError::ExpectedComma)?;
         }
 
-        self.expect_peek(Token::RBrace, ParserError::ExpectedRBrace)?;
+        self.expect_peek(Token::Close(Delimiter::Brace), ParserError::ExpectedRBrace)?;
 
         Ok(Expr::HashExpr(pairs))
     }
 
     fn parse_if_expression(&mut self) -> ParserResult<Expr> {
-        // cur_tok: If, peek_tok: LParen
-        self.expect_peek(Token::LParen, ParserError::ExpectedLParen)?;
-        self.next_token(); // jump over LParen to get expression
+        // cur_tok: If, peek_tok: Open(Delimiter::Paren)
+        self.expect_peek(Token::Open(Delimiter::Paren), ParserError::ExpectedLParen)?;
+        self.next_token(); // jump over Open(Delimiter::Paren) to get expression
 
         let condition = Box::new(self.parse_expression(Precedence::Lowest)?);
 
-        self.expect_peek(Token::RParen, ParserError::ExpectedRParen)?;
-        self.expect_peek(Token::LBrace, ParserError::ExpectedLBrace)?;
+        self.expect_peek(Token::Close(Delimiter::Paren), ParserError::ExpectedRParen)?;
+        self.expect_peek(Token::Open(Delimiter::Brace), ParserError::ExpectedLBrace)?;
 
         let consequence = self.parse_block_statement()?;
 
         let alternative = if self.peek_tok == Token::Else {
             self.next_token();
-            self.expect_peek(Token::LBrace, ParserError::ExpectedLBrace)?;
+            self.expect_peek(Token::Open(Delimiter::Brace), ParserError::ExpectedLBrace)?;
             Some(self.parse_block_statement()?)
         } else {
             None
@@ -303,7 +303,7 @@ impl Parser {
         let mut block = BlockStmt::new();
         self.next_token();
 
-        while self.cur_tok != Token::RBrace && self.cur_tok != Token::Eof {
+        while self.cur_tok != Token::Close(Delimiter::Brace) && self.cur_tok != Token::Eof {
             let stmt = self.parse_statement()?;
             block.statements.push(stmt);
             self.next_token();
@@ -360,13 +360,13 @@ impl Parser {
             return Err(ParserError::ExpectedIdent(self.peek_tok.clone()))
         }
 
-        // cur_tok: Ident, peek_tok: LParen
-        self.expect_peek(Token::LParen, ParserError::ExpectedLParen)?;
+        // cur_tok: Ident, peek_tok: Open(Delimiter::Paren)
+        self.expect_peek(Token::Open(Delimiter::Paren), ParserError::ExpectedLParen)?;
 
         // get params
         let params = self.parse_function_parameters()?;
 
-        self.expect_peek(Token::LBrace, ParserError::ExpectedLBrace)?;
+        self.expect_peek(Token::Open(Delimiter::Brace), ParserError::ExpectedLBrace)?;
 
         let body = self.parse_block_statement()?;
 
@@ -377,7 +377,7 @@ impl Parser {
         let mut parameters = vec![];
 
         self.next_token();
-        if self.cur_tok == Token::RParen {
+        if self.cur_tok == Token::Close(Delimiter::Paren) {
             return Ok(parameters);
         }
 
@@ -397,7 +397,7 @@ impl Parser {
             parameters.push(ident);
         }
 
-        self.expect_peek(Token::RParen, ParserError::ExpectedRParen)?;
+        self.expect_peek(Token::Close(Delimiter::Paren), ParserError::ExpectedRParen)?;
 
         Ok(parameters)
     }

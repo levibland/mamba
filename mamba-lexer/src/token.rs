@@ -1,21 +1,28 @@
 use std::fmt;
 
 #[derive(Debug, Clone, PartialEq)]
+pub enum Delimiter {
+    Paren,
+    Brack,
+    Brace,
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub enum Token {
-    // Literals
+    Illegal(char),
     String(String),
     Number(i64),
     Ident(String),
     Boolean(bool),
+    Open(Delimiter),
+    Close(Delimiter),
 
-    // Keywords
     Let,
     Fn,
     If,
     Else,
     Return,
 
-    // Operators
     Plus,
     Minus,
     Asterisk,
@@ -28,21 +35,12 @@ pub enum Token {
     Lt,
     GtEq,
     LtEq,
-
-    // Punctuation
-    LParen,
-    RParen,
-    LBrace,
-    RBrace,
-    LBracket,
-    RBracket,
+    
     Comma,
     Colon,
     Semicolon,
 
-    // Special tokens
     Eof,
-    Illegal(char),
 }
 
 impl fmt::Display for Token {
@@ -50,10 +48,17 @@ impl fmt::Display for Token {
         use Token::*;
 
         match self {
+            Illegal(c) => write!(f, "Illegal: {}", c),
             String(s) => write!(f, "\"{}\"", s),
             Number(n) => write!(f, "{}", n),
             Ident(i) => write!(f, "let {};", i),
             Boolean(b) => write!(f, "{}", b),
+            Open(Delimiter::Paren) => write!(f, "("),
+            Open(Delimiter::Brack) => write!(f, "["),
+            Open(Delimiter::Brace) => write!(f, "{{"),
+            Close(Delimiter::Paren) => write!(f, ")"),
+            Close(Delimiter::Brack) => write!(f, "]"),
+            Close(Delimiter::Brace) => write!(f, "}}"),
             Let => write!(f, "let"),
             Fn => write!(f, "fn"),
             If => write!(f, "if"),
@@ -71,17 +76,10 @@ impl fmt::Display for Token {
             Lt => write!(f, "<"),
             GtEq => write!(f, ">="),
             LtEq => write!(f, "<="),
-            LParen => write!(f, "("),
-            RParen => write!(f, ")"),
-            LBrace => write!(f, "{{"),
-            RBrace => write!(f, "}}"),
-            LBracket => write!(f, "["),
-            RBracket => write!(f, "]"),
             Comma => write!(f, ","),
             Colon => write!(f, ":"),
             Semicolon => write!(f, ";"),
             Eof => write!(f, "\0"),
-            Illegal(c) => write!(f, "Illegal: {}", c),
         }
     }
 }
