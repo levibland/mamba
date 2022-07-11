@@ -1,8 +1,8 @@
 #[macro_use] extern crate clap;
 
-use mamba::evaluator::*;
-use mamba::lexer::*;
-use mamba::parser::*;
+use mamba_evaluator::*;
+use mamba_lexer::*;
+use mamba_parser::*;
 use std::fs::File;
 use std::io::prelude::*;
 

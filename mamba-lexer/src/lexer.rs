@@ -1,4 +1,4 @@
-use crate::lexer::token::*;
+use crate::token::*;
 
 /**
  * 

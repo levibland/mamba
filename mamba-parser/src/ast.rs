@@ -1,5 +1,5 @@
 use std::fmt;
-use crate::lexer::token::*;
+use mamba_lexer::token::*;
 
 pub struct Program {
     pub statements: Vec<Stmt>,

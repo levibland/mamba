@@ -1,15 +1,28 @@
 [package]
 name = "mamba"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Levi Bland <levi.bland@icloud.com>"]
 edition = "2021"
 homepage = "https://github.com/levibland/mamba"
 repository = "https://github.com/levibland/mamba"
 readme = "README.md"
 license = "MIT"
-description = "Interpreter for the Mamba programming language"
+description = "The Mamba Programming Language"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[workspace]
+members = [
+    "mamba-lexer",
+    "mamba-parser",
+    "mamba-evaluator",
+]
+
+[[bin]]
+name = "mamba"
+edition = "2021"
+path = "src/main.rs"
 
 [dependencies]
 clap = "~2.31.2"
+mamba_lexer = { path = "./mamba-lexer" }
+mamba_parser = { path = "./mamba-parser" }
+mamba_evaluator = { path = "./mamba-evaluator" }

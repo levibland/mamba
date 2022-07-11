@@ -1,5 +1,5 @@
-use crate::parser::ast::*;
-use crate::evaluator::object::*;
+use mamba_parser::ast::*;
+use crate::object::*;
 
 pub struct BuiltinFunctions;
 

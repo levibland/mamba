@@ -1,6 +1,6 @@
-use crate::evaluator::environment::*;
-use crate::evaluator::object::*;
-use crate::parser::ast::*;
+use crate::environment::*;
+use crate::object::*;
+use mamba_parser::ast::*;
 use std::cell::RefCell;
 use std::rc::Rc;
 
@@ -379,8 +379,8 @@ impl Evaluator {
 #[cfg(test)]
 mod evaluator_tests {
     use super::*;
-    use crate::lexer::*;
-    use crate::parser::*;
+    use mamba_lexer::*;
+    use mamba_parser::*;
 
     fn compare(input: &str, object: Object) {
         let lexer = Lexer::new(input.to_string());

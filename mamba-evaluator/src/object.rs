@@ -1,5 +1,5 @@
-use crate::evaluator::environment::*;
-use crate::parser::ast::*;
+use crate::environment::*;
+use mamba_parser::ast::*;
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::fmt;

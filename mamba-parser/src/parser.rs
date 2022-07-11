@@ -1,6 +1,6 @@
-use crate::lexer::Lexer;
-use crate::lexer::token::Token;
-use crate::parser::ast::{
+use mamba_lexer::Lexer;
+use mamba_lexer::token::Token;
+use crate::ast::{
     BlockStmt, 
     Expr, 
     Stmt, 
