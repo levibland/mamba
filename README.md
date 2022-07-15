@@ -17,3 +17,16 @@ $ cargo test
 ```bash
 $ cargo run --release -- --src examples/functions.mb
 ```
+
+### An Example Program
+```rust
+fn test(x, y) {
+    return x + y;
+}
+
+println(test(1, 2));
+```
+
+The above code uses the builtin `println` function to print 3.
+
+More examples can be found in [/examples](https://github.com/levibland/mamba/examples)
