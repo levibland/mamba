@@ -29,4 +29,4 @@ println(test(1, 2));
 
 The above code uses the builtin `println` function to print 3.
 
-More examples can be found in [/examples](https://github.com/levibland/mamba/examples)
+More examples can be found in [/examples](https://github.com/levibland/mamba/tree/master/examples)
