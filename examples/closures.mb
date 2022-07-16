@@ -3,3 +3,11 @@ let closure = |x, y| => {
 };
 
 println(closure(1, 2));
+
+fn add_together(x, y, z) {
+    return z(x, y);
+}
+
+let a = add_together(3, 4, closure);
+
+println(a);
