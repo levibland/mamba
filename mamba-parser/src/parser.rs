@@ -32,6 +32,7 @@ enum ParserError {
     ExpectedInfixToken(Token),
     ExpectedLiteral(Expr),
     ExpectedPipe(Token),
+    ExpectedFatArrow(Token),
 }
 
 pub struct Parser {
@@ -153,6 +154,8 @@ impl Parser {
     fn parse_closure_expression(&mut self) -> ParserResult<Expr> {
         // cur_tok: Token::Pipe, peek_tok: Token::Pipe | Token::Ident
         let params = self.parse_closure_parameters()?;
+        
+        self.expect_peek(Token::FatArrow, ParserError::ExpectedFatArrow)?;
 
         self.expect_peek(Token::Open(Delimiter::Brace), ParserError::ExpectedLBrace)?;
 

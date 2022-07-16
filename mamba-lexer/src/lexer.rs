@@ -62,7 +62,12 @@ impl Lexer {
             '=' => {
                 if self.peek() == '=' {
                     self.read();
+                    self.read();
                     Token::Eq
+                } else if self.peek() == '>' {
+                    self.read();
+                    self.read();
+                    Token::FatArrow
                 } else {
                     self.read();
                     Token::Assign

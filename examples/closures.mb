@@ -1,4 +1,4 @@
-let closure = |x, y| {
+let closure = |x, y| => {
     return x + y;
 };
 
