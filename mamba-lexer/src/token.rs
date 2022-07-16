@@ -35,6 +35,7 @@ pub enum Token {
     Lt,
     GtEq,
     LtEq,
+    Pipe,
     
     Comma,
     Colon,
@@ -76,6 +77,7 @@ impl fmt::Display for Token {
             Lt => write!(f, "<"),
             GtEq => write!(f, ">="),
             LtEq => write!(f, "<="),
+            Pipe => write!(f, "|"),
             Comma => write!(f, ","),
             Colon => write!(f, ":"),
             Semicolon => write!(f, ";"),

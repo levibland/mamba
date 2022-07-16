@@ -104,6 +104,7 @@ impl Lexer {
             ',' => { self.read(); Token::Comma },
             ':' => { self.read(); Token::Colon },
             ';' => { self.read(); Token::Semicolon },
+            '|' => { self.read(); Token::Pipe },
             '\0' => { self.read(); Token::Eof },
             c if c.is_letter() => {
                 let str = self.read_ident();
