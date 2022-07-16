@@ -88,6 +88,10 @@ impl Evaluator {
             Expr::ArrayExpr(exprs) => self.eval_array(exprs),
             Expr::HashExpr(hash_exprs) => self.eval_hash(hash_exprs),
             Expr::IndexExpr { array, index } => self.eval_index(*array, *index),
+            Expr::ClosureExpr {
+                params, 
+                body 
+            } => Object::Function(params, body.statements, Rc::clone(&self.env)),
         }
     }
 

@@ -31,6 +31,7 @@ enum ParserError {
     ExpectedPrefixToken(Token),
     ExpectedInfixToken(Token),
     ExpectedLiteral(Expr),
+    ExpectedPipe(Token),
 }
 
 pub struct Parser {
@@ -144,8 +145,49 @@ impl Parser {
             Token::Open(Delimiter::Paren) => self.parse_grouped_expression(),
             Token::Open(Delimiter::Brace) => self.parse_map_literal(),
             Token::If => self.parse_if_expression(),
+            Token::Pipe => self.parse_closure_expression(),
             _ => Err(ParserError::ExpectedPrefixToken(self.cur_tok.clone())),
         }
+    }
+
+    fn parse_closure_expression(&mut self) -> ParserResult<Expr> {
+        // cur_tok: Token::Pipe, peek_tok: Token::Pipe | Token::Ident
+        let params = self.parse_closure_parameters()?;
+
+        self.expect_peek(Token::Open(Delimiter::Brace), ParserError::ExpectedLBrace)?;
+
+        let body = self.parse_block_statement()?;
+
+        Ok(Expr::ClosureExpr { params, body })
+    }
+
+    fn parse_closure_parameters(&mut self) -> ParserResult<Vec<Ident>> {
+        let mut parameters = vec![];
+
+        self.next_token();
+        if self.cur_tok == Token::Pipe {
+            return Ok(parameters);
+        }
+
+        let ident = match self.cur_tok.clone() {
+            Token::Ident(s) => Ident(s),
+            t => return Err(ParserError::ExpectedIdent(t.clone())),
+        };
+        parameters.push(ident);
+
+        while self.peek_tok == Token::Comma {
+            self.next_token();
+            self.next_token();
+            let ident = match self.cur_tok.clone() {
+                Token::Ident(s) => Ident(s),
+                t => return Err(ParserError::ExpectedIdent(t.clone())),
+            };
+            parameters.push(ident);
+        }
+
+        self.expect_peek(Token::Pipe, ParserError::ExpectedPipe)?;
+
+        Ok(parameters)
     }
 
     fn parse_prefix_expression(&mut self) -> ParserResult<Expr> {

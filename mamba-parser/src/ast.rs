@@ -52,6 +52,10 @@ pub enum Expr {
         array: Box<Expr>,
         index: Box<Expr>,
     },
+    ClosureExpr {
+        params: Vec<Ident>,
+        body: BlockStmt,
+    },
 }
 
 impl fmt::Display for Expr {
@@ -73,6 +77,7 @@ impl fmt::Display for Expr {
                 write!(f, "{{{}}}", pairs)
             },
             Expr::IndexExpr { array, index } => write!(f, "({}[{}])", array, index),
+            Expr::ClosureExpr { params, body } => write!(f, "|{}| {}", csv_str(params), body),
         }
     }
 }
