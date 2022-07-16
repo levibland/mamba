@@ -1,0 +1,11 @@
+let a = 10;
+
+println(a);
+
+fn plus_one(x) {
+    return x + 1;
+}
+
+let a = plus_one(a);
+
+println(a);
