@@ -89,6 +89,8 @@ pub enum Token {
     Bang,
     #[token(".")]
     Dot,
+    #[token("=>")]
+    FatArrow,
 
     Eof,
 
