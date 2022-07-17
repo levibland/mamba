@@ -27,4 +27,4 @@ path = "src/main.rs"
 clap = "~2.31.2"
 mamba_lexer = { path = "./mamba-lexer-old" }
 mamba_parser = { path = "./mamba-parser-old" }
-mamba_evaluator = { path = "./mamba-evaluator" }
+mamba_evaluator = { path = "./mamba-evaluator-old" }
