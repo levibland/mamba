@@ -7,4 +7,4 @@ edition = "2021"
 
 [dependencies]
 mamba_parser = { path = "../mamba-parser" }
-mamba_lexer = { path = "../mamba-lexer" }
+mamba_lexer = { path = "../mamba-lexer-old" }
