@@ -11,7 +11,7 @@ description = "The Mamba Programming Language"
 
 [workspace]
 members = [
-    "mamba-lexer",
+    "mamba-lexer-old",
     "mamba-parser",
     "mamba-evaluator",
 ]
