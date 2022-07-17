@@ -349,7 +349,252 @@ impl<'p> Parser<'p> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use lexer::Token;
+    use lexer::{Token, Lex};
 
+    fn lex_and_parse(input: &str) -> Program {
+        let tokens = Lex::lex(input);
+        let mut parser = Parser::new(tokens.iter());
+        parser.parse().unwrap()
+    }
 
+    #[test]
+    fn parse_fn_declarations() {
+        assert_eq!(
+            lex_and_parse("fn test() {}"),
+            vec![
+                Statement::FunctionDeclaration { name: String::from("test"), params: vec![], body: vec![] },
+            ]
+        );
+
+        assert_eq!(
+            lex_and_parse("fn name(person) {}"),
+            vec![
+                Statement::FunctionDeclaration { name: String::from("name"), body: vec![], params: vec![
+                    Parameter { name: String::from("person") }
+                ] }
+            ]
+        );
+
+        assert_eq!(
+            lex_and_parse("fn say_hello(name, separator) {}"),
+            vec![
+                Statement::FunctionDeclaration { name: String::from("say_hello"), body: vec![], params: vec![
+                    Parameter { name: String::from("name") },
+                    Parameter { name: String::from("separator") }
+                ] }
+            ]
+        );
+
+        assert_eq!(
+            lex_and_parse("
+                fn say_hello() {
+                    let name = true
+                }
+            "),
+            vec![
+                Statement::FunctionDeclaration { name: String::from("say_hello"), body: vec![
+                    Statement::LetDeclaration { name: String::from("name"), initial: Expression::Bool(true).some() }
+                ], params: vec![] }
+            ]
+        );
+    }
+
+    #[test]
+    fn parse_let_declarations() {
+        assert_eq!(
+            lex_and_parse("let name"),
+            vec![
+                Statement::LetDeclaration { name: String::from("name"), initial: None }
+            ]
+        );
+
+        assert_eq!(
+            lex_and_parse("let name = true"),
+            vec![
+                Statement::LetDeclaration { name: String::from("name"), initial: Expression::Bool(true).some() }
+            ]
+        );
+    }
+
+    #[test]
+    fn parse_literals() {
+        assert_eq!(
+            lex_and_parse(r##"123 "testing" true false 123456"##),
+            vec![
+                Statement::Expression { expression: Expression::Integer(123) },
+                Statement::Expression { expression: Expression::String("testing".to_owned()) },
+                Statement::Expression { expression: Expression::Bool(true) },
+                Statement::Expression { expression: Expression::Bool(false) },
+                Statement::Expression { expression: Expression::Integer(123456) },
+            ]
+        );
+    }
+
+    #[test]
+    fn parse_mathematical_operations() {
+        assert_eq!(
+            lex_and_parse("1 + 2"),
+            vec![
+                Statement::Expression { expression: Expression::Infix(
+                    Box::new(Expression::Integer(1)),
+                    Op::Add,
+                    Box::new(Expression::Integer(2))
+                ) }
+            ]
+        );
+
+        assert_eq!(
+            lex_and_parse("1 - 2"),
+            vec![
+                Statement::Expression { expression: Expression::Infix(
+                    Box::new(Expression::Integer(1)),
+                    Op::Subtract,
+                    Box::new(Expression::Integer(2))
+                ) }
+            ]
+        );
+
+        assert_eq!(
+            lex_and_parse("1 * 2"),
+            vec![
+                Statement::Expression { expression: Expression::Infix(
+                    Box::new(Expression::Integer(1)),
+                    Op::Multiply,
+                    Box::new(Expression::Integer(2))
+                ) }
+            ]
+        );
+
+        assert_eq!(
+            lex_and_parse("1 / 2"),
+            vec![
+                Statement::Expression { expression: Expression::Infix(
+                    Box::new(Expression::Integer(1)),
+                    Op::Divide,
+                    Box::new(Expression::Integer(2))
+                ) }
+            ]
+        );
+
+        assert_eq!(
+            lex_and_parse("1 + 2 * 3"),
+            vec![
+                Statement::Expression { expression: Expression::Infix(
+                    Box::new(Expression::Integer(1)),
+                    Op::Add,
+                    Box::new(Expression::Infix(
+                        Box::new(Expression::Integer(2)),
+                        Op::Multiply,
+                        Box::new(Expression::Integer(3)),
+                    ))
+                ) }
+            ]
+        );
+
+        assert_eq!(
+            lex_and_parse("1 + 2 * 3 / 3"),
+            vec![
+                Statement::Expression { expression: Expression::Infix(
+                    Box::new(Expression::Integer(1)),
+                    Op::Add,
+                    Box::new(Expression::Infix(
+                        Box::new(Expression::Infix(
+                            Box::new(Expression::Integer(2)),
+                            Op::Multiply,
+                            Box::new(Expression::Integer(3)),
+                        )),
+                        Op::Divide,
+                        Box::new(Expression::Integer(3)),
+                        ),
+                    )
+                ) }
+            ]
+        );
+    }
+
+    #[test]
+    fn parse_call_expressions() {
+        assert_eq!(
+            lex_and_parse("hello()"),
+            vec![
+                Statement::Expression { expression: Expression::Call(
+                    Box::new(Expression::Identifier("hello".to_owned())),
+                    vec![]
+                ) }
+            ]
+        );
+
+        assert_eq!(
+            lex_and_parse("hello(true)"),
+            vec![
+                Statement::Expression { expression: Expression::Call(
+                    Box::new(Expression::Identifier("hello".to_owned())),
+                    vec![
+                       Expression::Bool(true)
+                    ]
+                )}
+            ]
+        );
+
+        assert_eq!(
+            lex_and_parse("hello(true, 1234)"),
+            vec![
+                Statement::Expression { expression: Expression::Call(
+                    Box::new(Expression::Identifier("hello".to_owned())),
+                    vec![
+                        Expression::Bool(true),
+                        Expression::Integer(1234)
+                    ]
+                )}
+            ]
+        );
+    }
+
+    #[test]
+    fn parse_if_statements() {
+        assert_eq!(
+            lex_and_parse("if true {}"),
+            vec![
+                Statement::If {
+                    condition: Expression::Bool(true),
+                    then: vec![],
+                    otherwise: None
+                }
+            ]
+        );
+
+        assert_eq!(
+            lex_and_parse("if true {
+                let number = 1
+            }"),
+            vec![
+                Statement::If {
+                    condition: Expression::Bool(true),
+                    then: vec![
+                        Statement::LetDeclaration { name: String::from("number"), initial: Some(Expression::Integer(1)) },
+                    ],
+                    otherwise: None
+                }
+            ]
+        );
+
+        assert_eq!(
+            lex_and_parse("if false {
+                let number = 1
+            } else {
+                let number = 2
+            }"),
+            vec![
+                Statement::If {
+                    condition: Expression::Bool(false),
+                    then: vec![
+                        Statement::LetDeclaration { name: String::from("number"), initial: Some(Expression::Integer(1)) },
+                    ],
+                    otherwise: Some(vec![
+                        Statement::LetDeclaration { name: String::from("number"), initial: Some(Expression::Integer(2)) },
+                    ])
+                }
+            ]
+        );
+    }
 }

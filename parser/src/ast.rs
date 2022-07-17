@@ -50,6 +50,10 @@ pub enum Expression {
 }
 
 impl Expression {
+    pub fn some(self) -> Option<Self> {
+        Some(self)
+    }
+
     pub fn boxed(self) -> Box<Self> {
         Box::new(self)
     }
