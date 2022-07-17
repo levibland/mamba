@@ -12,9 +12,10 @@ description = "The Mamba Programming Language"
 [workspace]
 members = [
     "mamba-lexer-old",
-    "mamba-parser",
+    "mamba-parser-old",
     "mamba-evaluator",
     "lexer",
+    "parser",
 ]
 
 [[bin]]
@@ -25,5 +26,5 @@ path = "src/main.rs"
 [dependencies]
 clap = "~2.31.2"
 mamba_lexer = { path = "./mamba-lexer-old" }
-mamba_parser = { path = "./mamba-parser" }
+mamba_parser = { path = "./mamba-parser-old" }
 mamba_evaluator = { path = "./mamba-evaluator" }
