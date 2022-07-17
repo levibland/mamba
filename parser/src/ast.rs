@@ -43,7 +43,7 @@ pub enum Expression {
     Assign(Box<Expression>, Box<Expression>),
     Infix(Box<Expression>, Op, Box<Expression>),
     Prefix(Op, Box<Expression>),
-    Call(Box<Expression>),
+    Call(Box<Expression>, Vec<Expression>),
     Closure(Vec<Parameter>, Vec<Statement>),
     Index(Box<Expression>, Option<Box<Expression>>),
     List(Vec<Expression>),
