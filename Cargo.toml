@@ -13,9 +13,10 @@ description = "The Mamba Programming Language"
 members = [
     "mamba-lexer-old",
     "mamba-parser-old",
-    "mamba-evaluator",
+    "mamba-evaluator-old",
     "lexer",
     "parser",
+    "evaluator",
 ]
 
 [[bin]]
