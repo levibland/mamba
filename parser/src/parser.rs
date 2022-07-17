@@ -5,7 +5,7 @@ use lexer::Token;
 
 use crate::ast::*;
 
-type ParseResult<T> = Result<T, ParseError>;
+pub type ParseResult<T> = Result<T, ParseError>;
 
 #[derive(Debug, Error)]
 pub enum ParseError {
@@ -69,6 +69,16 @@ impl<'p> Parser<'p> {
         s.read();
 
         s
+    }
+
+    pub fn parse(&mut self) -> ParseResult<Program> {
+        let mut program = vec![];
+
+        while let Some(statement) = self.next()? {
+            program.push(statement);
+        }
+
+        Ok(program)
     }
 
     fn read(&mut self) {
@@ -334,4 +344,12 @@ impl<'p> Parser<'p> {
 
         Ok(block)
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use lexer::Token;
+
+
 }
