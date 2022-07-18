@@ -131,9 +131,9 @@ name = "mamba"
 version = "0.1.1"
 dependencies = [
  "clap",
- "mamba_evaluator",
- "mamba_lexer",
- "mamba_parser",
+ "evaluator",
+ "lexer",
+ "parser",
 ]
 
 [[package]]

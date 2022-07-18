@@ -38,7 +38,7 @@ pub enum Expression {
     Integer(i64),
     String(String),
     Bool(bool),
-    Null,
+    Nil,
     Identifier(Identifier),
     Assign(Box<Expression>, Box<Expression>),
     Infix(Box<Expression>, Op, Box<Expression>),

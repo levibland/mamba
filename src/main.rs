@@ -1,8 +1,8 @@
 #[macro_use] extern crate clap;
 
-use mamba_evaluator::*;
-use mamba_lexer::*;
-use mamba_parser::*;
+use ::evaluator::*;
+use ::lexer::*;
+use ::parser::*;
 use std::fs::File;
 use std::io::prelude::*;
 
@@ -17,20 +17,23 @@ fn read_file(file_path: String) -> Result<String, ::std::io::Error> {
 }
 
 fn main() {
-    let code_string = match commands::read_command() {
-        Command::FileRead(file_path) => read_file(file_path).ok(),
-        Command::RunInlineCode(code) => Some(code),
+    let file_path = match commands::read_command() {
+        Command::FileRead(file_path) => Some(file_path),
         Command::Noop => None,
-    };
+    }.unwrap();
 
-    if let Some(code_string) = code_string {
-        let lexer = Lexer::new(code_string);
-        let mut parser = Parser::new(lexer);
-        let program = parser.parse_program();
-        parser.check_parser_errors();
-
-        let mut evaluator = Evaluator::new();
-        let eval = evaluator.eval_program(program);
-        println!("{}", eval);
+    let path = std::path::PathBuf::from(file_path.clone());
+    let contents = read_file(file_path).unwrap();
+    let tokens = Lex::lex(contents.as_str());
+    let mut parser = Parser::new(tokens.iter());
+    
+    match parser.parse() {
+        Ok(ast) => {
+            match evaluate(ast, path) {
+                Ok(_) => {},
+                Err(e) => e.print(),
+            };
+        },
+        Err(e) => e.print(),
     }
 }

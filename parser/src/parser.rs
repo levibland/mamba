@@ -129,7 +129,7 @@ impl<'p> Parser<'p> {
                 if let Ok(expression) = self.parse_expression(Precedence::Lowest) {
                     Ok(Statement::Return { value: expression })
                 } else {
-                    Ok(Statement::Return { value: Expression::Null })
+                    Ok(Statement::Return { value: Expression::Nil })
                 }
             },
             _ => Ok(Statement::Expression { expression: self.parse_expression(Precedence::Lowest)? }),
@@ -144,7 +144,7 @@ impl<'p> Parser<'p> {
             },
             Token::Nil => {
                 self.expect_token_and_read(Token::Nil)?;
-                Expression::Null
+                Expression::Nil
             },
             Token::Integer(i) => {
                 self.expect_token_and_read(Token::Integer(0))?;

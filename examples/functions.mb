@@ -1,7 +1,7 @@
 fn square(x) {
-    return x * x;
+    return x * x
 }
 
-let four = 4;
+let four = 4
 
-println(square(four));
+println(square(four))
