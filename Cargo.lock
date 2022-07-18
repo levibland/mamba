@@ -128,31 +128,12 @@ dependencies = [
 
 [[package]]
 name = "mamba"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "clap",
  "evaluator",
  "lexer",
  "parser",
-]
-
-[[package]]
-name = "mamba_evaluator"
-version = "0.1.0"
-dependencies = [
- "mamba_lexer",
- "mamba_parser",
-]
-
-[[package]]
-name = "mamba_lexer"
-version = "0.1.0"
-
-[[package]]
-name = "mamba_parser"
-version = "0.1.0"
-dependencies = [
- "mamba_lexer",
 ]
 
 [[package]]

@@ -5,3 +5,9 @@ fn square(x) {
 let four = 4
 
 println(square(four))
+
+let f = fn(x) {
+    return x + x
+}
+
+println(f(2))

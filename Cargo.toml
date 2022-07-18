@@ -1,6 +1,6 @@
 [package]
 name = "mamba"
-version = "0.1.1"
+version = "0.2.0"
 authors = ["Levi Bland <levi.bland@icloud.com>"]
 edition = "2021"
 homepage = "https://github.com/levibland/mamba"
@@ -11,9 +11,6 @@ description = "The Mamba Programming Language"
 
 [workspace]
 members = [
-    "mamba-lexer-old",
-    "mamba-parser-old",
-    "mamba-evaluator-old",
     "lexer",
     "parser",
     "evaluator",
