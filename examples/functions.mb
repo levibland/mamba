@@ -6,6 +6,7 @@ let four = 4
 
 println(square(four))
 
+;; here is a closure
 let f = fn(x) {
     return x + x
 }
