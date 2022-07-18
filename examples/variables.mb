@@ -1,5 +1,5 @@
-let one = 1;
-let two = 2;
-let three = one + two;
+let one = 1
+let two = 2
+let three = one + two
 
-println(three);
+println(three)

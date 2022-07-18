@@ -1,11 +1,11 @@
-let a = 10;
+let a = 10
 
-println(a);
+println(a)
 
 fn plus_one(x) {
-    return x + 1;
+    return x + 1
 }
 
-let a = plus_one(a);
+let a = plus_one(a)
 
-println(a);
+println(a)
