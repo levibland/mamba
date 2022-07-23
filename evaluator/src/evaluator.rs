@@ -87,6 +87,40 @@ impl<'e> Evaluator<'e> {
                     name, params, body, environment: None, context: None,
                 });
             },
+            Statement::For { iterable, value, index, then } => {
+                let iterable = self.run_expression(iterable)?;
+
+                let items = match iterable {
+                    Value::List(items) => items,
+                    _ => return Err(EvaluatorResults::InvalidIterable(iterable.typestring())),
+                };
+
+                // if there aren't any items in the list, we can leave this execution
+                // cycle early.
+                if items.borrow().is_empty() {
+                    return Ok(())
+                }
+
+                let set_index = index.is_some();
+
+                for (i, item) in items.borrow().iter().enumerate() {
+                    self.env_mut().set(value.clone(), item.clone());
+
+                    if set_index {
+                        self.env_mut().set(index.clone().unwrap(), Value::Integer(i as i64));
+                    }
+
+                    for statement in then.clone() {
+                        self.run_statement(statement)?;
+                    }
+                }
+
+                self.env_mut().drop(value);
+
+                if set_index {
+                    self.env_mut().drop(index.unwrap());
+                }
+            },
             Statement::If { condition, then, otherwise } => {
                 let condition = self.run_expression(condition)?;
 

@@ -18,8 +18,14 @@ pub enum Token {
     If,
     #[token("else")]
     Else,
+    #[token("for")]
+    For,
     #[token("return")]
     Return,
+    #[token("in")]
+    In,
+    #[token("not in")]
+    NotIn,
 
     #[regex(r"[a-zA-Z_?]+", to_string)]
     Identifier(String),

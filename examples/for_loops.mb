@@ -1,0 +1,9 @@
+let fruits = ["apple", "orange", "pear"]
+
+for fruit in fruits {
+    println(fruit)
+}
+
+for (i, fruit) in fruits {
+    println(i + ". " + fruit)
+}
