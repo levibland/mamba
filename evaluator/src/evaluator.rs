@@ -53,15 +53,15 @@ pub fn evaluate(ast: Program, path: PathBuf) -> EvaluatorResult<()> {
 }
 
 #[derive(Debug, Clone)]
-pub struct Evaluator<'i> {
-    ast: Iter<'i, Statement>,
+pub struct Evaluator<'e> {
+    ast: Iter<'e, Statement>,
     environment: Rc<RefCell<Environment>>,
     pub globals: HashMap<String, Value>,
     path: PathBuf,
 }
 
-impl<'i> Evaluator<'i> {
-    pub fn new(ast: Iter<'i, Statement>, path: PathBuf) -> Self {
+impl<'e> Evaluator<'e> {
+    pub fn new(ast: Iter<'e, Statement>, path: PathBuf) -> Self {
         Self {
             ast: ast,
             environment: Rc::new(RefCell::new(Environment::new())),
@@ -106,7 +106,6 @@ impl<'i> Evaluator<'i> {
             Statement::Return { value } => {
                 return Err(EvaluatorResults::Return(self.run_expression(value)?));
             },
-            _ => todo!(),
         })
     }
 
